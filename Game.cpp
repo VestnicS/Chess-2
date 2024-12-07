@@ -25,7 +25,7 @@ Game::Game()
 
 void Game::test()
 {
-    for (auto i : future_go({4, 3}))
+    for (auto i : future_go({0, 0}))
     {
         std::cout << i.first << ' ' << i.second << std::endl;
     }
