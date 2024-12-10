@@ -14,6 +14,7 @@ public:
     BoardWidget *board;
 public:
     explicit GameWindow(QWidget *parent = nullptr);
+    void setPname(const QString);
     ~GameWindow();
 private slots:
     void on_exit_clicked();
