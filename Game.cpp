@@ -1,3 +1,7 @@
+
+
+#include "Game.h"
+#include "Pawn.cpp"
 #include "Horse.cpp"
 #include "King.cpp"
 #include "Queen.cpp"
@@ -30,12 +34,8 @@ Game::Game()
 
 void Game::test()
 {
-<<<<<<< HEAD
     std::cout << checkmate(field, Black) << std::endl;
     for (auto i : future_go({6, 0}))
-=======
-    for (auto i : future_go({0, 0}))
->>>>>>> 734c7a900b80a5b91faf344939feb7b38a592bd2
     {
         std::cout << i.first << ' ' << i.second << std::endl;
     }
