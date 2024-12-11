@@ -20,15 +20,22 @@ std::vector<std::pair<int, int>> Bishop::go(std::vector<std::vector<Figure *>> f
 
     for (int i = 1; i < 8; i++)
     {
-        if (x - i >= 0 and x - i <= 7 and y - i >= 0 and y - i <= 7)
+        if (x - i >= 0 && x - i <= 7 && y - i >= 0 && y - i <= 7)
         {
             if (field[x - i][y - i])
             {
-                std::pair<int, int> possible_pair;
-                possible_pair.first = x - i;
-                possible_pair.second = y - i;
-                possible_moves.push_back(possible_pair);
-                break;
+                if (field[x - i][y - i]->figure_color() != field[x][y]->figure_color())
+                {
+                    std::pair<int, int> possible_pair;
+                    possible_pair.first = x - i;
+                    possible_pair.second = y - i;
+                    possible_moves.push_back(possible_pair);
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
             else
             {
@@ -42,15 +49,22 @@ std::vector<std::pair<int, int>> Bishop::go(std::vector<std::vector<Figure *>> f
 
     for (int i = 1; i < 8; i++)
     {
-        if (x - i >= 0 and x - i <= 7 and y + i >= 0 and y + i <= 7)
+        if (x - i >= 0 && x - i <= 7 && y + i >= 0 && y + i <= 7)
         {
             if (field[x - i][y + i])
             {
-                std::pair<int, int> possible_pair;
-                possible_pair.first = x - i;
-                possible_pair.second = y + i;
-                possible_moves.push_back(possible_pair);
-                break;
+                if (field[x - i][y + i]->figure_color() != field[x][y]->figure_color())
+                {
+                    std::pair<int, int> possible_pair;
+                    possible_pair.first = x - i;
+                    possible_pair.second = y + i;
+                    possible_moves.push_back(possible_pair);
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
             else
             {
@@ -64,15 +78,22 @@ std::vector<std::pair<int, int>> Bishop::go(std::vector<std::vector<Figure *>> f
 
     for (int i = 1; i < 8; i++)
     {
-        if (x + i >= 0 and x + i <= 7 and y + i >= 0 and y + i <= 7)
+        if (x + i >= 0 && x + i <= 7 && y + i >= 0 && y + i <= 7)
         {
             if (field[x + i][y + i])
             {
-                std::pair<int, int> possible_pair;
-                possible_pair.first = x + i;
-                possible_pair.second = y + i;
-                possible_moves.push_back(possible_pair);
-                break;
+                if (field[x + i][y + i]->figure_color() != field[x][y]->figure_color())
+                {
+                    std::pair<int, int> possible_pair;
+                    possible_pair.first = x + i;
+                    possible_pair.second = y + i;
+                    possible_moves.push_back(possible_pair);
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
             else
             {
@@ -86,15 +107,22 @@ std::vector<std::pair<int, int>> Bishop::go(std::vector<std::vector<Figure *>> f
 
     for (int i = 1; i < 8; i++)
     {
-        if (x + i >= 0 and x + i <= 7 and y - i >= 0 and y - i <= 7)
+        if (x + i >= 0 && x + i <= 7 && y - i >= 0 && y - i <= 7)
         {
             if (field[x + i][y - i])
             {
-                std::pair<int, int> possible_pair;
-                possible_pair.first = x + i;
-                possible_pair.second = y - i;
-                possible_moves.push_back(possible_pair);
-                break;
+                if (field[x + i][y - i]->figure_color() != field[x][y]->figure_color())
+                {
+                    std::pair<int, int> possible_pair;
+                    possible_pair.first = x + i;
+                    possible_pair.second = y - i;
+                    possible_moves.push_back(possible_pair);
+                    break;
+                }
+                else
+                {
+                    break;
+                }
             }
             else
             {

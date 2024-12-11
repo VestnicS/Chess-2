@@ -34,7 +34,7 @@ bool checkmate(std::vector<std::vector<Figure *>> field, Color my_color)
 
 bool stalemate(std::vector<std::vector<Figure *>> field, Color my_color)
 {
-    if (cant_move(sfield, my_color) && (!check_field(field, my_color)))
+    if (cant_move(field, my_color) && (!check_field(field, my_color)))
     {
         return true;
     }

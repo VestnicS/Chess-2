@@ -2,11 +2,11 @@
 
 Horse::Horse(Color new_color)
 {
-    color = new_color;
-    start = true;
+    Horse::color = new_color;
+    Horse::start = true;
 }
 std::string Horse::name() { return "Horse"; }
-Color Horse::figure_color() { return color; }
+Color Horse::figure_color() { return Horse::color; }
 
 std::vector<std::pair<int, int>> Horse::go(std::vector<std::vector<Figure *>> field, std::pair<int, int> coordinates)
 {
@@ -32,7 +32,7 @@ std::vector<std::pair<int, int>> Horse::go(std::vector<std::vector<Figure *>> fi
                 }
                 else
                 {
-                    if (field[x + i][y + j]->figure_color() != color)
+                    if (field[x + i][y + j]->figure_color() != Horse::color)
                     {
                         std::vector<std::vector<Figure *>> field_new = field;
                         field_new[x + i][y + j] = field_new[x][y];
