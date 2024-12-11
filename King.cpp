@@ -1,4 +1,6 @@
 #include "Check_field.cpp"
+#include "King.h"
+
 King::King(Color new_color)
 {
     King::color = new_color;
@@ -111,7 +113,7 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
             {
                 new_field = field;
                 new_field[x + i][y + j] = new_field[x][y];
-                if (field[x + i][y + j] == nullptr)
+                if (field[x][y] == nullptr)
                 {
                     if (!check_field(new_field, King::color))
                     {
@@ -133,3 +135,5 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
     }
     return future_go_arr;
 }
+
+bool King::check(std::vector<std::vector<Figure *>> field, Color my_color, std::pair<int, int> coordinates) { return false; }

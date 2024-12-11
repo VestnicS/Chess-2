@@ -1,4 +1,6 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
+
 #include "Figure.h"
 class Game
 {
@@ -12,3 +14,4 @@ public:
     void move(std::pair<int, int> coordinates_new);
     void print();
 };
+#endif

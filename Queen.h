@@ -1,4 +1,5 @@
-#pragma once
+#ifndef QUEEN_H
+#define QUEEN_H
 
 #include "Figure.h"
 
@@ -14,3 +15,5 @@ public:
     bool check(std::vector<std::vector<Figure *>> field, Color my_color, std::pair<int, int> coordinates) override;
     std::vector<std::pair<int, int>> go(std::vector<std::vector<Figure *>> field, std::pair<int, int> coordinates) override;
 };
+
+#endif

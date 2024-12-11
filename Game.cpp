@@ -1,5 +1,5 @@
 
-
+#include <iostream>
 #include "Game.h"
 #include "Pawn.cpp"
 #include "Horse.cpp"
@@ -8,6 +8,7 @@
 #include "Rock.cpp"
 #include "Bishop.cpp"
 #include "End_of_game_checks.cpp"
+
 Game::Game()
 {
     coordinates_old = {-1, -1};
