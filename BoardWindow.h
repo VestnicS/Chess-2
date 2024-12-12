@@ -6,6 +6,7 @@
 #include<QLabel>
 #include<QMouseEvent>
 #include<Qstring>
+#include"Chess-2-back_end/Game.h"
 class BoardWidget:public QWidget
 {
     Q_OBJECT
@@ -19,20 +20,21 @@ class BoardWidget:public QWidget
     QString path;
     bool CanMove=false;
 public:
-    QVector<QPair<int,int>> painted;
-    QVector<QPair<int,int>> PaintPossibleCells(QVector<QPair<int,int>>);
-    //void Move(QVector<QPair<int,int>>);
-    void UnpaintPossibleCells(QVector<QPair<int,int>>);
+    std::vector<std::pair<int,int>> painted;
+    std::vector<std::pair<int,int>> PaintPossibleCells(std::vector<std::pair<int,int>>);
+
+    void UnpaintPossibleCells(std::vector<std::pair<int,int>>);
     explicit BoardWidget(QWidget *parent = nullptr);
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
-    void move(QPair<int,int>);
+    void move(std::pair<int,int>);
     int turn;
     int counter=0;
     void handlePromotionResult(int);
 private:
     QString getPiecePicPath(int m);
+    Game game;
 signals:
      void sendStatus(int);
      void sendTurn(bool);
@@ -55,26 +57,26 @@ public:
 
 public:
     int CurrPiecePosition[8][8]{
-        {-4, -1,  0, 0, 0, 0,  1,  4},
-        {-2, -1,  0, 0, 0, 0,  1,  2},
-        {-3, -1,  0, 0, 0, 0,  1,  3},
-        {-5, -1,  0, 0, 0, 0,  1,  5},
-        {-6, -1,  0, 0, 0, 0,  1,  6},
-        {-3, -1,  0, 0, 0, 0,  1,  3},
-        {-2, -1,  0, 0, 0, 0,  1,  2},
-        {-4, -1,  0, 0, 0, 0,  1,  4}
+        {-4, -2,  -3, -5, -6, -3,  -2,  -4},
+        {-1, -1,  -1, -1, -1, -1,  -1,  -1},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {1, 1,  1, 1, 1, 1,  1, 1},
+        {4, 2,  3, 5, 6, 3,  2, 4}
     };
     bool moveByClick{false};
 private:
-   const int CurrPiecePositionr[8][8]{
-        {-4, -1,  0, 0, 0, 0,  1,  4},
-        {-2, -1,  0, 0, 0, 0,  1,  2},
-        {-3, -1,  0, 0, 0, 0,  1,  3},
-        {-5, -1,  0, 0, 0, 0,  1,  5},
-        {-6, -1,  0, 0, 0, 0,  1,  6},
-        {-3, -1,  0, 0, 0, 0,  1,  3},
-        {-2, -1,  0, 0, 0, 0,  1,  2},
-        {-4, -1,  0, 0, 0, 0,  1,  4}
+    const int CurrPiecePositionr[8][8]{
+        {-4, -3,  -2, -5, -6, -3,  -2,  -4},
+        {-1, -1,  -1, -1, -1, -1,  -1,  -1},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {0, 0,  0, 0, 0, 0,  0,  0},
+        {1, 1,  1, 1, 1, 1,  1, 1},
+        {4, 2,  3, 5, 6, 3,  2, 4}
     };
 };
 #endif // BOARDWINDOW_H

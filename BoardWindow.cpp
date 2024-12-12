@@ -3,8 +3,9 @@
 
 BoardWidget::BoardWidget(QWidget *parent) : QWidget(parent) // turn == true - white
 {
-    color=-1;
-    turn=-1;
+
+    color=1;
+    turn=1;
     counter=0;
     this->setFixedSize(windowSize, windowSize);
     cells = new QLabel*[nCells];
@@ -66,7 +67,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
             movePoint.setY(to.y());
 
             // Получаем путь к изображению
-            QString picPath = getPiecePicPath(matrix[to.x()][to.y()]);
+            QString picPath = getPiecePicPath(CurrPiecePosition[to.x()][to.y()]);
             QPixmap pixmap(picPath);
             QPixmap scaledPixmap = pixmap.scaled(cellSize, cellSize, Qt::KeepAspectRatio);
             QCursor cursor(scaledPixmap);
@@ -74,7 +75,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
             currentPiecePosition = to;
 
             // Получаем возможные клетки для перемещения
-            painted = PaintPossibleCells({std::make_pair(4,0)});
+            painted = PaintPossibleCells(game.future_go({currentPiecePosition.x(),currentPiecePosition.y()}));
             isSelected = true; // Устанавливаем флаг выбора
             cells[to.x()][to.y()].clear(); // Убираем изображение фигуры с доски
             }
@@ -86,7 +87,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
                 movePoint.setY(to.y());
 
                 // Получаем путь к изображению
-                QString picPath = getPiecePicPath(matrix[to.x()][to.y()]);
+                QString picPath = getPiecePicPath(CurrPiecePosition[to.x()][to.y()]);
                 QPixmap pixmap(picPath);
                 QPixmap scaledPixmap = pixmap.scaled(cellSize, cellSize, Qt::KeepAspectRatio);
                 QCursor cursor(scaledPixmap);
@@ -94,7 +95,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
                 currentPiecePosition = to;
 
                 // Получаем возможные клетки для перемещения
-                painted = PaintPossibleCells({std::make_pair(4,0),std::make_pair(4,7)});
+                painted = PaintPossibleCells(game.future_go({currentPiecePosition.x(),currentPiecePosition.y()}));
                 isSelected = true; // Устанавливаем флаг выбора
                 cells[to.x()][to.y()].clear(); // Убираем изображение фигуры с доски
             }
@@ -172,9 +173,14 @@ void BoardWidget::setBoard(int *const *const piece, int status, int turn)
                                                                                         Qt::KeepAspectRatio));
                 }
         }
+
+            }
+        if (true)
+        {
+                int a;
+        }
         }
     }
-}
 
 QString BoardWidget::getPiecePicPath(int m) {
 
@@ -199,7 +205,7 @@ QString BoardWidget::getPiecePicPath(int m) {
 
     }
 }
-QVector<QPair<int,int>> BoardWidget::PaintPossibleCells(QVector<QPair<int,int>> vector)
+std::vector<std::pair<int,int>> BoardWidget::PaintPossibleCells(std::vector<std::pair<int,int>> vector)
 {
     for (auto pcell:vector)
     {
@@ -208,7 +214,7 @@ QVector<QPair<int,int>> BoardWidget::PaintPossibleCells(QVector<QPair<int,int>> 
     }
     return vector;
 }
-void BoardWidget::UnpaintPossibleCells(QVector<QPair<int,int>> vector)
+void BoardWidget::UnpaintPossibleCells(std::vector<std::pair<int,int>> vector)
 {
     for (auto pcell:vector)
     {
@@ -221,7 +227,7 @@ void BoardWidget::UnpaintPossibleCells(QVector<QPair<int,int>> vector)
         }
     }
 }
-void BoardWidget::move(QPair<int,int> ToCell)
+void BoardWidget::move(std::pair<int,int> ToCell)
 {
     for(auto pair:painted)
     {
@@ -233,33 +239,59 @@ void BoardWidget::move(QPair<int,int> ToCell)
     }
     if (CanMove)
     {
-        if (ToCell.second == 0 && CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()] == 1 && (turn==color))
+        counter=1;
+
+        if (ToCell.first == 0 && CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()] == 1 && (turn==color))
         {
             PromotionChoose promotionDialogW;
             promotionDialogW.promote(true);
             CurrPiecePosition[ToCell.first][ToCell.second]=promotionDialogW.getChosenPiece();
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
 
-            turn=!turn;
+            turn=turn*-1;
+            color=color*-1;
             setBoard();
         }
-        if (ToCell.second == 0 && CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()] == -1 && (turn==color))
+        if (ToCell.first == 7 && CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()] == -1 && (turn==color))
         {
             PromotionChoose promotionDialogW;
             promotionDialogW.promote(false);
             CurrPiecePosition[ToCell.first][ToCell.second]=-promotionDialogW.getChosenPiece();
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
-            turn=!turn;
+            CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
+            turn=turn*-1;
+            color=color*-1;
             setBoard();
         }
-            else{
+        if(abs(CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()])==6 && abs(ToCell.second-currentPiecePosition.y())==2 && ToCell.first==currentPiecePosition.x())
+        {
+            CurrPiecePosition[ToCell.first][ToCell.second]=CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()];
+            if(ToCell.second-currentPiecePosition.y()==2)
+            {
+                CurrPiecePosition[ToCell.first][ToCell.second-1]=4*color;
+                CurrPiecePosition[7][currentPiecePosition.y()]=0;
+
+            }
+            else
+            {
+              CurrPiecePosition[ToCell.first][ToCell.second+1]=4*color;
+              CurrPiecePosition[0][currentPiecePosition.y()]=0;
+            }
+            CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
+            setBoard();
+            turn=turn*-1;
+            color=color*-1;
+        }
+        else{
                 if(CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]!= 0 && (turn==color)){
         CurrPiecePosition[ToCell.first][ToCell.second]=CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()];
         CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
-        turn=!turn;
+        turn=turn*-1;
+        color=color*-1;
         setBoard();
                 }
     }
+    game.move({ToCell.first,ToCell.second});
     CanMove=false;
 
 
