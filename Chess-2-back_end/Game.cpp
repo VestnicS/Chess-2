@@ -49,21 +49,4 @@ void Game::move(std::pair<int, int> coordinates_new)
     field[x1][y1]->start = false;
 }
 
-void Game::print()
-{
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if (field[i][j] == nullptr)
-            {
-                std::cout << "0000" << ' ';
-            }
-            else
-            {
-                std::cout << field[i][j]->name() << ' ';
-            }
-        }
-        std::cout << std::endl;
-    }
 }
