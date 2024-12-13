@@ -51,6 +51,7 @@ void Game::move(std::pair<int, int> coordinates_new)
     }
     field[x1][y1]->start = false;
 }
+
 void Game::pawnMove(std::pair<int, int> coordinates_new,int piece)
 {
     int x0 = coordinates_old.first;
