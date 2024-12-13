@@ -32,8 +32,6 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
                     if (field[x][i]->start && field[x][i]->figure_color() == King::color)
                     {
 
-                        if (y == 4)
-                        {
                             new_field[x][6] = new_field[x][y];
                             new_field[x][y] = nullptr;
                             new_field[x][5] = new_field[x][7];
@@ -42,19 +40,7 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
                             {
                                 future_go_arr.push_back({x, 6});
                             }
-                        }
-                        if (y == 3)
-                        {
-                            new_field = field;
-                            new_field[x][5] = new_field[x][y];
-                            new_field[x][y] = nullptr;
-                            new_field[x][4] = new_field[x][7];
-                            new_field[x][7] = nullptr;
-                            if (!check_field(new_field, King::color))
-                            {
-                                future_go_arr.push_back({x, 5});
-                            }
-                        }
+
                     }
                 }
                 else
@@ -74,8 +60,6 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
                 {
                     if (field[x][i]->start && field[x][i]->figure_color() == King::color)
                     {
-                        if (y == 4)
-                        {
                             new_field[x][2] = new_field[x][y];
                             new_field[x][y] = nullptr;
                             new_field[x][3] = new_field[x][0];
@@ -84,18 +68,7 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
                             {
                                 future_go_arr.push_back({x, 2});
                             }
-                        }
-                        if (y == 3)
-                        {
-                            new_field[x][1] = new_field[x][y];
-                            new_field[x][y] = nullptr;
-                            new_field[x][2] = new_field[x][0];
-                            new_field[x][0] = nullptr;
-                            if (!check_field(new_field, King::color))
-                            {
-                                future_go_arr.push_back({x, 1});
-                            }
-                        }
+
                     }
                 }
                 else

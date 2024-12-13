@@ -245,23 +245,27 @@ void BoardWidget::move(std::pair<int,int> ToCell)
         {
             PromotionChoose promotionDialogW;
             promotionDialogW.promote(true);
-            CurrPiecePosition[ToCell.first][ToCell.second]=promotionDialogW.getChosenPiece();
-            CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
+
 
             turn=turn*-1;
             color=color*-1;
+            CurrPiecePosition[ToCell.first][ToCell.second]=promotionDialogW.getChosenPiece();
+            CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
+            game.pawnMove({ToCell.first,ToCell.second},CurrPiecePosition[ToCell.first][ToCell.second]);
         }
         if (ToCell.first == 7 && CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()] == -1 && (turn==color))
         {
             PromotionChoose promotionDialogW;
             promotionDialogW.promote(false);
+
+            turn=turn*-1;
+            color=color*-1;
             CurrPiecePosition[ToCell.first][ToCell.second]=-promotionDialogW.getChosenPiece();
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
-            turn=turn*-1;
-            color=color*-1;
             setBoard();
+            game.pawnMove({ToCell.first,ToCell.second},CurrPiecePosition[ToCell.first][ToCell.second]);
         }
         if(abs(CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()])==6 && abs(ToCell.second-currentPiecePosition.y())==2 && ToCell.first==currentPiecePosition.x())
         {
@@ -269,18 +273,19 @@ void BoardWidget::move(std::pair<int,int> ToCell)
             if(ToCell.second-currentPiecePosition.y()==2)
             {
                 CurrPiecePosition[ToCell.first][ToCell.second-1]=4*color;
-                CurrPiecePosition[7][currentPiecePosition.y()]=0;
+                CurrPiecePosition[currentPiecePosition.x()][7]=0;
 
             }
             else
             {
               CurrPiecePosition[ToCell.first][ToCell.second+1]=4*color;
-              CurrPiecePosition[0][currentPiecePosition.y()]=0;
+                CurrPiecePosition[currentPiecePosition.x()][0]=0;
             }
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
             turn=turn*-1;
             color=color*-1;
+            game.move({ToCell.first,ToCell.second});
         }
         else{
                 if(CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]!= 0 && (turn==color)){
@@ -289,9 +294,10 @@ void BoardWidget::move(std::pair<int,int> ToCell)
         turn=turn*-1;
         color=color*-1;
         setBoard();
+        game.move({ToCell.first,ToCell.second});
                 }
     }
-    game.move({ToCell.first,ToCell.second});
+
     CanMove=false;
 
 

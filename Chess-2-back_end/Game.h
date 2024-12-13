@@ -19,6 +19,6 @@ public:
     Game();
     std::vector<std::pair<int, int>> future_go(std::pair<int, int> coordinates);
     void move(std::pair<int, int> coordinates_new);
-    void print();
+    void pawnMove(std::pair<int, int> coordinates_new,int piece);
 };
 #endif
