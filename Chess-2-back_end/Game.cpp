@@ -4,16 +4,25 @@
 Game::Game()
 {
     coordinates_old = {-1, -1};
+
     field = {
-         {new Rock(Black), new Horse(Black), new Bishop(Black), new Queen(Black), new King(Black), new Bishop(Black), new Horse(Black), new Rock(Black)},
-         {new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black)},
-         {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-         {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-         {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-         {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
-         {new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White)},
-         {new Rock(White), new Horse(White), new Bishop(White), new Queen(White), new King(White), new Bishop(White), new Horse(White), new Rock(White)},
-     };
+            {new Rock(Black), new Horse(Black), new Bishop(Black), new Queen(Black), new King(Black), new Bishop(Black), new Horse(Black), new Rock(Black)},
+            {new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black), new Pawn(Black)},
+            {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+            {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+            {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+            {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr},
+            {new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White), new Pawn(White)},
+            {new Rock(White), new Horse(White), new Bishop(White), new Queen(White), new King(White), new Bishop(White), new Horse(White), new Rock(White)},
+    };
+    //МЕГА КОСТЫЛЬ
+    for(int i=0;i<8;i++){
+        for(int j=0;j<8;j++){
+            if (field[i][j]){
+                field[i][j]->start=true;
+            }
+        }
+    }
 }
 
 std::vector<std::pair<int, int>> Game::future_go(std::pair<int, int> coordinates)
@@ -35,7 +44,7 @@ void Game::move(std::pair<int, int> coordinates_new)
         field[x1][y1] = field[x0][y0];
         field[x0][y0] = nullptr;
         field[x1][y1-1]=field[x0][7];
-        field[x0][7]=nullptr;
+        field[x0][7]= nullptr;
     }
     else if (field[x0][y0]->name() == "King" && field[x0][y0]->start && (y1 - y0) == -2)
     {
@@ -49,9 +58,10 @@ void Game::move(std::pair<int, int> coordinates_new)
         field[x1][y1] = field[x0][y0];
         field[x0][y0] = nullptr;
     }
-    field[x1][y1]->start = false;
-}
 
+    field[x1][y1]->start = false;
+
+}
 void Game::pawnMove(std::pair<int, int> coordinates_new,int piece)
 {
     int x0 = coordinates_old.first;

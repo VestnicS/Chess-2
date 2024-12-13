@@ -5,17 +5,17 @@
 
 Pawn::Pawn(Color new_color)
 {
-    color = new_color;
-    start = true;
+    Pawn::color = new_color;
+    Pawn::start = true;
 }
 std::string Pawn::name() { return "Pawn"; }
-Color Pawn::figure_color() { return color; }
+Color Pawn::figure_color() { return Pawn::color; }
 std::vector<std::pair<int, int>> Pawn::go(std::vector<std::vector<Figure *>> field, std::pair<int, int> coordinates)
 {
     int x = coordinates.first;
     int y = coordinates.second;
     std::vector<std::pair<int, int>> possible_moves;
-    if (color == Black)
+    if (Pawn::color == Black)
     {
         if (x == 1)
         {
@@ -97,7 +97,7 @@ std::vector<std::pair<int, int>> Pawn::go(std::vector<std::vector<Figure *>> fie
         }
     }
 
-    else if (color == White)
+    else if (Pawn::color == White)
     {
         if (x == 6)
         {
@@ -188,7 +188,7 @@ bool Pawn::check(std::vector<std::vector<Figure *>> field, Color my_color, std::
     int y = coordinates.second;
     std::vector<std::pair<int, int>> possible_moves;
 
-    if (color == Black)
+    if (Pawn::color == Black)
     {
         if (x+1 >= 0 && x+1 <= 7 && y+1 >=0 && y+1 <= 7) {
             if (field[x + 1][y + 1])
@@ -200,7 +200,7 @@ bool Pawn::check(std::vector<std::vector<Figure *>> field, Color my_color, std::
             }
         }
         if (x+1 >= 0 && x+1 <= 7 && y-1 >=0 && y-1 <= 7) {
-            if (!field[x + 1][y - 1])
+            if (field[x + 1][y - 1])
             {
                 std::pair<int, int> possible_pair;
                 possible_pair.first = x + 1;
@@ -210,7 +210,7 @@ bool Pawn::check(std::vector<std::vector<Figure *>> field, Color my_color, std::
         }
     }
 
-    else if (color == White)
+    else if (Pawn::color == White)
     {
         if (x-1 >= 0 && x-1 <= 7 && y+1 >=0 && y+1 <= 7) {
             if (field[x - 1][y + 1])
@@ -222,7 +222,7 @@ bool Pawn::check(std::vector<std::vector<Figure *>> field, Color my_color, std::
             }
         }
         if (x-1 >= 0 && x-1 <= 7 && y-1 >=0 && y-1 <= 7) {
-            if (!field[x - 1][y - 1])
+            if (field[x - 1][y - 1])
             {
                 std::pair<int, int> possible_pair;
                 possible_pair.first = x - 1;
