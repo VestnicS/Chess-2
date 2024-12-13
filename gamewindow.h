@@ -12,13 +12,13 @@ class GameWindow : public QDialog
     Q_OBJECT
 public:
     BoardWidget *board;
+    QString ip;
+    Ui::GameWindow *ui;
+    void setPname(const QString name);
 public:
     explicit GameWindow(QWidget *parent = nullptr);
-    void setPname(const QString);
     ~GameWindow();
 private slots:
     void on_exit_clicked();
-private:
-    Ui::GameWindow *ui;
 };
 #endif // GAMEWINDOW_H

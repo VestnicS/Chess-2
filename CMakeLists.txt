@@ -40,6 +40,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Chess-2-back_end/Bishop.cpp Chess-2-back_end/Bishop.h Chess-2-back_end/Check_field.cpp Chess-2-back_end/CMakeLists.txt Chess-2-back_end/End_of_game_checks.cpp Chess-2-back_end/Figure.h Chess-2-back_end/Game.cpp Chess-2-back_end/Game.h Chess-2-back_end/Horse.cpp Chess-2-back_end/Horse.h Chess-2-back_end/King.cpp Chess-2-back_end/King.h  Chess-2-back_end/Pawn.cpp Chess-2-back_end/Pawn.h Chess-2-back_end/Queen.cpp Chess-2-back_end/Queen.h Chess-2-back_end/Rock.cpp Chess-2-back_end/Rock.h
         Chess-2-back_end/Check_field.h
         Chess-2-back_end/End_of_game_checks.h
+        myclient.cpp myclient.h myserver.cpp myserver.h
     )
 else()
     if(ANDROID)

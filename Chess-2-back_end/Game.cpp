@@ -36,6 +36,7 @@ void Game::move(std::pair<int, int> coordinates_new)
         field[x0][y0] = nullptr;
         field[x1][y1-1]=field[x0][7];
         field[x0][7]=nullptr;
+        field[x1][y1-1]->start=false;
     }
     else if (field[x0][y0]->name() == "King" && field[x0][y0]->start && (y1 - y0) == -2)
     {
@@ -43,6 +44,7 @@ void Game::move(std::pair<int, int> coordinates_new)
         field[x0][y0] = nullptr;
         field[x1][y1+1]=field[x0][0];
         field[x0][0]=nullptr;
+        field[x1][y1+1]->start=false;
     }
     else
     {

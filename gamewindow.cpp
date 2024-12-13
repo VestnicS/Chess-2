@@ -9,21 +9,17 @@ GameWindow::GameWindow(QWidget *parent) :
 
     ui->setupUi(this);
 
+
+}
+void GameWindow::setPname(const QString name)
+{
     board = new BoardWidget(ui->chessboard_frame);
+    board->setIp(ip,name);
     auto geom = board->geometry();
     geom.setX(0); geom.setY(0);
     board->setGeometry(geom);
 }
-void GameWindow::setPname(const QString name)
-{
-    QFont font =ui->Your->font();
-    font.setPointSize(20);
-    ui->Opponent->setText(name);
-    ui->Your->setText(name);
-    ui->Your->setFont(font);
-    ui->Opponent->setFont(font);
-    ui->Your_2->setFont(font);
-}
+
 GameWindow::~GameWindow()
 {
     delete ui;

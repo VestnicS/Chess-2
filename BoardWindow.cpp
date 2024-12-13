@@ -1,10 +1,17 @@
 #include "BoardWindow.h"
 #include"PromotionChoose.h"
-
+#include <QMessageBox>
+#include"mainwindow.h"
 BoardWidget::BoardWidget(QWidget *parent) : QWidget(parent) // turn == true - white
 {
+    _sok = new QTcpSocket(this);
+    connect(_sok, SIGNAL(readyRead()), this, SLOT(onSokReadyRead()));
+    connect(_sok, SIGNAL(connected()), this, SLOT(onSokConnected()));
+    connect(_sok, SIGNAL(disconnected()), this, SLOT(onSokDisconnected()));
+    connect(_sok, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),this, SLOT(onSokDisplayError(QAbstractSocket::SocketError)));
 
-    color=1;
+    Game game;
+    color=0;
     turn=1;
     counter=0;
     this->setFixedSize(windowSize, windowSize);
@@ -28,6 +35,111 @@ BoardWidget::BoardWidget(QWidget *parent) : QWidget(parent) // turn == true - wh
     currentPiecePosition=QPoint(-1,-1);
     isSelected=false;
     setBoard();
+
+
+}
+
+void BoardWidget::setIp(QString _ip,QString _name)
+{
+    ip = _ip;
+    name=_name;
+    _sok->connectToHost(ip, 1234);
+}
+
+void BoardWidget::onSokDisplayError(QAbstractSocket::SocketError socketError)
+{
+    switch (socketError) {
+    case QAbstractSocket::RemoteHostClosedError:
+        break;
+    case QAbstractSocket::HostNotFoundError:
+        QMessageBox::information(this, "Error", "The host was not found");
+        break;
+    case QAbstractSocket::ConnectionRefusedError:
+        QMessageBox::information(this, "Error", "The connection was refused by the peer.");
+        break;
+    default:
+        QMessageBox::information(this, "Error", "The following error occurred: "+_sok->errorString());
+    }
+}
+
+void BoardWidget::onSokReadyRead()
+{
+    QDataStream in(_sok);
+    //                                 2
+    if (_blockSize == 0) {
+        //                   2                      2
+        if (_sok->bytesAvailable() < (int)sizeof(quint16))
+            return;
+        //                 (2      )
+        in >> _blockSize;
+        qDebug() << "_blockSize now " << _blockSize;
+    }
+    //
+    if (_sok->bytesAvailable() < _blockSize)
+        return;
+    else
+        //
+        _blockSize = 0;
+    //3      -
+    quint8 command;
+    in >> command;
+    qDebug() << "Received command " << command;
+
+    switch (command)
+    {
+    case MyClient::comMessageToUsers:
+    {
+        QString user;
+        in >> user;
+        QString message;
+        in >> message;
+    }
+    break;
+    case MyClient::comPrivateServerMessage:
+    {
+        QString message;
+        in >> message;
+        QMessageBox mb;
+        mb.setText(message);
+        mb.show();
+
+    }
+    break;
+    case MyClient::comErrNameInvalid:
+    {
+        QMessageBox::information(this, "Error", "This name is invalid.");
+        _sok->disconnectFromHost();
+    }
+    break;
+    case MyClient::comErrNameUsed:
+    {
+        QMessageBox::information(this, "Error", "This name is already used.");
+        _sok->disconnectFromHost();
+    }
+    break;
+    }
+}
+
+void BoardWidget::onSokConnected()
+{
+    _blockSize = 0;
+
+    //try autch
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out << (quint16)0;
+    out << (quint8)MyClient::comAutchReq;
+    out << name;
+    out.device()->seek(0);
+    out << (quint16)(block.size() - sizeof(quint16));
+    _sok->write(block);
+}
+
+void BoardWidget::onSokDisconnected()
+{
+    QMessageBox disconnect;
+    disconnect.setText("You have been disconnected");
+    this->close();
 }
 
 void BoardWidget::mousePressEvent(QMouseEvent *event){
@@ -62,7 +174,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
     {
         if(to.x() < 8 && to.y() < 8 && matrix[to.x()][to.y()] != 0)
         {
-            if (matrix[to.x()][to.y()]>0 && (turn==1 && color==1)){
+            if (matrix[to.x()][to.y()]>0 && (turn==color)){
             movePoint.setX(to.x());
             movePoint.setY(to.y());
 
@@ -82,23 +194,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
 
         }
         {
-            if (matrix[to.x()][to.y()]<0 && turn==-1 && color==-1){
-                movePoint.setX(to.x());
-                movePoint.setY(to.y());
 
-                // Получаем путь к изображению
-                QString picPath = getPiecePicPath(CurrPiecePosition[to.x()][to.y()]);
-                QPixmap pixmap(picPath);
-                QPixmap scaledPixmap = pixmap.scaled(cellSize, cellSize, Qt::KeepAspectRatio);
-                QCursor cursor(scaledPixmap);
-                this->setCursor(cursor);
-                currentPiecePosition = to;
-
-                // Получаем возможные клетки для перемещения
-                painted = PaintPossibleCells(game.future_go({currentPiecePosition.x(),currentPiecePosition.y()}));
-                isSelected = true; // Устанавливаем флаг выбора
-                cells[to.x()][to.y()].clear(); // Убираем изображение фигуры с доски
-            }
     }
     }}
 
@@ -143,13 +239,6 @@ void BoardWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 void BoardWidget::setBoard(int *const *const piece, int status, int turn)
 {
-
-    if(color==-1 && counter==0){
-        for(int i=0;i<nCells;i++)
-            for(int j=0;j<nCells;j++)
-                CurrPiecePosition[nCells-i-1][nCells-j-1]=CurrPiecePositionr[i][j];
-        counter=1;
-    }
     if (piece)
     {
         for (int x = 0; x < nCells; ++x){
@@ -175,10 +264,6 @@ void BoardWidget::setBoard(int *const *const piece, int status, int turn)
         }
 
             }
-        if (true)
-        {
-                int a;
-        }
         }
     }
 
