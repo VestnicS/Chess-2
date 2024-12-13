@@ -2,6 +2,21 @@
 #include "ui_dialog.h"
 #include <QMessageBox>
 
+QHostAddress getLocalIPv4Address() {
+  QHostInfo hostInfo = QHostInfo::fromName(QHostInfo::localHostName());
+  if (hostInfo.error() != QHostInfo::NoError) {
+    qDebug() << "QHostInfo error:" << hostInfo.errorString();
+    return QHostAddress(); // Return invalid address on error
+  }
+
+  QList<QHostAddress> addresses = hostInfo.addresses();
+  for (const QHostAddress& address : addresses) {
+    if (address.protocol() == QAbstractSocket::IPv4Protocol && !address.isLoopback()) {
+      return address; // Return the first IPv4 non-loopback address found
+    }
+  }
+}
+
 Dialog::Dialog(QWidget *parent) :QDialog(parent), ui(new Ui::Dialog)
 {
     ui->setupUi(this);
@@ -14,7 +29,7 @@ Dialog::Dialog(QWidget *parent) :QDialog(parent), ui(new Ui::Dialog)
     connect(_serv, SIGNAL(addLogToGui(QString,QColor)), this, SLOT(onAddLogToGui(QString,QColor)));
 
     //�� ��������� ��������� ������ �� 127.0.0.1:1234
-    if (_serv->doStartServer(QHostAddress::LocalHost, 1234))
+    if (_serv->doStartServer(getLocalIPv4Address(), 1234))
     {
         ui->lwLog->insertItem(0, QTime::currentTime().toString()+" server started at "+_serv->serverAddress().toString()+":"+QString::number(_serv->serverPort()));
     }

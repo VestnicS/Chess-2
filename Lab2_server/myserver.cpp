@@ -136,14 +136,13 @@ bool MyServer::isNameUsed(QString name) const
 
 void MyServer::incomingConnection(qintptr handle)
 {
-    //������� �������
     MyClient *client = new MyClient(handle, this, this);
-//    if (_widget != 0)
-//    {
-//        connect(client, SIGNAL(addUserToGui(QString)), _widget, SLOT(onAddUserToGui(QString)));
-//        connect(client, SIGNAL(removeUserFromGui(QString)), _widget, SLOT(onRemoveUserFromGui(QString)));
-//        connect(client, SIGNAL(messageToGui(QString,QString,QStringList)), _widget, SLOT(onMessageToGui(QString,QString,QStringList)));
-//    }
+    /*if (_widget != 0)
+    {
+        connect(client, SIGNAL(addUserToGui(QString)), _widget, SLOT(onAddUserToGui(QString)));
+        connect(client, SIGNAL(removeUserFromGui(QString)), _widget, SLOT(onRemoveUserFromGui(QString)));
+        connect(client, SIGNAL(messageToGui(QString,QString,QStringList)), _widget, SLOT(onMessageToGui(QString,QString,QStringList)));
+    }*/
     connect(client, SIGNAL(removeUser(MyClient*)), this, SLOT(onRemoveUser(MyClient*)));
     _clients.append(client);
     if(_clients.size() > 0 && _clients.size() % 2 == 0)

@@ -3,6 +3,8 @@
 
 #include <QTcpServer>
 #include <QDebug>
+#include <QHostInfo>
+#include <QStringList>
 #include "myclient.h"
 class MyClient;
 
