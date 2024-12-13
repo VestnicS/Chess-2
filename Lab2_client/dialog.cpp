@@ -5,29 +5,13 @@
 #include <QDebug>
 #include <QTcpServer>
 #include <QHostInfo>
-
-QHostAddress getLocalIPv4Address() {
-  QHostInfo hostInfo = QHostInfo::fromName(QHostInfo::localHostName());
-  if (hostInfo.error() != QHostInfo::NoError) {
-    qDebug() << "QHostInfo error:" << hostInfo.errorString();
-    return QHostAddress(); // Return invalid address on error
-  }
-
-  QList<QHostAddress> addresses = hostInfo.addresses();
-  for (const QHostAddress& address : addresses) {
-    if (address.protocol() == QAbstractSocket::IPv4Protocol && !address.isLoopback()) {
-      return address; // Return the first IPv4 non-loopback address found
-    }
-  }
-}
+#include <QNetworkInterface>
 
 Dialog::Dialog(QWidget *parent) :QDialog(parent),ui(new Ui::Dialog)
 {
     ui->setupUi(this);
-
     _name = "";
     _sok = new QTcpSocket(this);
-    ui->leHost->setText(getLocalIPv4Address().toString());
     connect(_sok, SIGNAL(readyRead()), this, SLOT(onSokReadyRead()));
     connect(_sok, SIGNAL(connected()), this, SLOT(onSokConnected()));
     connect(_sok, SIGNAL(disconnected()), this, SLOT(onSokDisconnected()));

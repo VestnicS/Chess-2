@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       += core gui network
-
+CONFIG += C++17
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Lab2_client
