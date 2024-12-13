@@ -110,4 +110,24 @@ std::vector<std::pair<int, int>> King::go(std::vector<std::vector<Figure *>> fie
     return future_go_arr;
 }
 
-bool King::check(std::vector<std::vector<Figure *>> field, Color my_color, std::pair<int, int> coordinates) { return false; }
+bool King::check(std::vector<std::vector<Figure *>> field, Color my_color, std::pair<int, int> coordinates) {
+    int x = coordinates.first;
+    int y = coordinates.second;
+    for (int i = -1; i <= 1; i++)
+    {
+        for (int j = -1; j <= 1; j++)
+        {
+            if (x + i < 8 && x + i >= 0 && y + j < 8 && y + j >= 0 && !(i == 0 && j == 0))
+            {
+                if (field[x + i][y + j])
+                {
+                    if (field[x + i][y + j]->figure_color() == my_color && field[x+i][y+i]->name()=="King")
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
