@@ -42,10 +42,12 @@ void MainMenu::onPlayButtonClicked() {
 
     bool ok;
     bool ok1=false;
-    while(!ok1)
+    while(!ok1){
     Ip = QString(QInputDialog::getText(this, tr("Ip"),
                                        tr("Ip"), QLineEdit::Normal,
                                        QString(),&ok1));
+        if(!ok){ break; this->close();}
+}
 
     gameWindow.ip = Ip;
 

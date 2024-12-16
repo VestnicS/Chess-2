@@ -32,6 +32,7 @@ public:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseDoubleClickEvent(QMouseEvent *event) override;
+    void send_move(QString move);
     void move(std::pair<int,int>);
     int turn;
     int counter=0;

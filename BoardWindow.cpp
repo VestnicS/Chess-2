@@ -93,6 +93,36 @@ void BoardWidget::onSokReadyRead()
         in >> user;
         QString message;
         in >> message;
+        int x0,y0,x1,y1,c;
+        c=0;
+        for(auto ch:message.toStdString())
+        {
+
+            if(std::isdigit(ch))
+            {
+                if(c==0)
+                {
+                    x0=static_cast<int>(ch);
+                }
+                if(c==1)
+                {
+                     y0=static_cast<int>(ch);
+                }
+                if(c==2)
+                {
+                     x1=static_cast<int>(ch);
+                }
+                if(c==3)
+                {
+                     y1=static_cast<int>(ch);
+                }
+            }
+        }
+        CurrPiecePosition[x1][y1]=CurrPiecePosition[x0][y0];
+        CurrPiecePosition[x0][y0]=0;
+        setBoard();
+        game.move({x1,y1});
+
     }
     break;
     case MyClient::comPrivateServerMessage:
@@ -100,8 +130,38 @@ void BoardWidget::onSokReadyRead()
         QString message;
         in >> message;
         QMessageBox mb;
-        mb.setText(message);
-        mb.show();
+        QString name1;
+        int counter=0;
+        for(auto ch:message)
+        {
+            if(ch!=',' && counter==0)
+            {
+                name1+=ch;
+            }
+            if(ch==',')
+            {
+                counter=1;
+                continue;
+            }
+            if (ch=='1')
+            {
+                color=1;
+            }
+            else{color=-1;}
+
+        }
+        mb.setText("You are plaing against "+name1);
+        mb.setStyleSheet("QLabel{min-width: 500px;}");
+        mb.setEscapeButton(QMessageBox::StandardButton::Close);
+        int result =mb.exec();
+        if(result==QMessageBox::Close)
+        {
+            mb.close();
+        }
+
+
+
+
 
     }
     break;
@@ -312,6 +372,21 @@ void BoardWidget::UnpaintPossibleCells(std::vector<std::pair<int,int>> vector)
         }
     }
 }
+
+void BoardWidget::send_move(QString person_move)
+{
+    QByteArray block;
+    QDataStream out(&block, QIODevice::WriteOnly);
+    out << (quint16)0;
+    out << (quint8)MyClient::comMessageToUsers;
+
+    out << person_move;
+    out.device()->seek(0);
+    out << (quint16)(block.size() - sizeof(quint16));
+    _sok->write(block);
+}
+
+
 void BoardWidget::move(std::pair<int,int> ToCell)
 {
     for(auto pair:painted)
@@ -333,7 +408,6 @@ void BoardWidget::move(std::pair<int,int> ToCell)
 
 
             turn=turn*-1;
-            color=color*-1;
             CurrPiecePosition[ToCell.first][ToCell.second]=promotionDialogW.getChosenPiece();
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
@@ -345,7 +419,6 @@ void BoardWidget::move(std::pair<int,int> ToCell)
             promotionDialogW.promote(false);
 
             turn=turn*-1;
-            color=color*-1;
             CurrPiecePosition[ToCell.first][ToCell.second]=-promotionDialogW.getChosenPiece();
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
@@ -369,7 +442,6 @@ void BoardWidget::move(std::pair<int,int> ToCell)
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
             turn=turn*-1;
-            color=color*-1;
             game.move({ToCell.first,ToCell.second});
         }
         else{
@@ -377,13 +449,24 @@ void BoardWidget::move(std::pair<int,int> ToCell)
         CurrPiecePosition[ToCell.first][ToCell.second]=CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()];
         CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
         turn=turn*-1;
-        color=color*-1;
         setBoard();
         game.move({ToCell.first,ToCell.second});
-                }
+        QString s;
+        s=QString("[");
+        s+=QString::number(currentPiecePosition.x());
+        s+=QString(",");
+        s+=QString::number(currentPiecePosition.y());
+        s+=QString("-");
+        s+=QString::number(ToCell.first);
+        s+=QString(",");
+        s+=QString::number(ToCell.second);
+        s+=QString("]");
+        send_move(s);
+
     }
+
 
     CanMove=false;
 
 
-    }}
+        }}}
