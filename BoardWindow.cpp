@@ -122,6 +122,7 @@ void BoardWidget::onSokReadyRead()
         CurrPiecePosition[x0][y0]=0;
         setBoard();
         game.move({x1,y1});
+        turn=turn*-1;
 
     }
     break;
