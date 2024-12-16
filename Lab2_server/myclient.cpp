@@ -58,6 +58,11 @@ void MyClient::onDisconnect()
     deleteLater();
 }
 
+void MyClient::set_color(bool _color)
+{
+    color = _color;
+}
+
 void MyClient::onError(QAbstractSocket::SocketError socketError) const
 {
     //w нужна для обсвобождения памяти от QMessageBox (посредством *parent = &w)
@@ -125,22 +130,24 @@ void MyClient::onReadyRead()
                 doSendCommand(comErrNameUsed);
                 return;
             }
-            while(_interlocutor == nullptr)
-            {
-                QTime dieTime= QTime::currentTime().addMSecs(500);
-                while (QTime::currentTime() < dieTime)
-                    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-            }
-            _serv->doSendServerMessageToUsers("You has been connected", this);
             //авторизация пройдена
             _name = name;
             _isAutched = true;
             //отправляем новому клиенту список активных пользователей
-            doSendUsersOnline();
+            //doSendUsersOnline();
             //добавляем в интерфейс
             emit addUserToGui(name);
+            if(_interlocutor != nullptr)
+            {
+                _serv->doSendServerMessageToUsers(_interlocutor->getName() + "," + QString::fromStdString(std::to_string(color)), {getName()});
+                QTime dieTime= QTime::currentTime().addMSecs(1000);
+                while (QTime::currentTime() < dieTime)
+                {
+                    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+                }
+                _serv->doSendServerMessageToUsers(getName() + "," + QString::fromStdString(std::to_string(color)), {_interlocutor->getName()});
+            }
             //сообщаем всем про нового ползователя
-            _serv->doSendToAllUserJoin(_name);
         }
         break;
         //от текущего пользователя пришло сообщение для всех
@@ -159,7 +166,7 @@ void MyClient::onReadyRead()
         {
             if(_interlocutor == nullptr)
             {
-                _serv->doSendServerMessageToUsers("Your interlocutor has left", this);
+                _serv->doSendServerMessageToUsers("Your interlocutor has left", {getName()});
                 return;
             }
             QString message;
@@ -170,6 +177,11 @@ void MyClient::onReadyRead()
             _serv->doSendMessageToUsers(message, users, _name);
             //обновляем интерфейс
             emit messageToGui(message, _name, users);
+            QTime dieTime= QTime::currentTime().addMSecs(1000);
+            while (QTime::currentTime() < dieTime)
+            {
+                QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
+            }
         }
         break;
     }

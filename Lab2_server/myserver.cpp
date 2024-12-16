@@ -1,7 +1,9 @@
 #include "myserver.h"
+#include <ctime>
 
 MyServer::MyServer(QWidget *widget, QObject *parent) :QTcpServer(parent)
 {
+    srand(time(0));
     _widget = widget;
 }
 
@@ -147,8 +149,11 @@ void MyServer::incomingConnection(qintptr handle)
     _clients.append(client);
     if(_clients.size() > 0 && _clients.size() % 2 == 0)
     {
+        bool color = rand() % 2;
         _clients[_clients.size() - 2]->set_interlocutor(_clients.back());
+        _clients[_clients.size() - 2]->set_color(color);
         _clients.back()->set_interlocutor(_clients[_clients.size() - 2]);
+        _clients.back()->set_color(!color);
     }
 }
 

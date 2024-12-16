@@ -37,6 +37,7 @@ public:
     void doSendCommand(quint8 comm) const;
     void doSendUsersOnline() const;
     void set_interlocutor(MyClient* interlocutor);
+    void set_color(bool _color);
 
 signals:
     void addUserToGui(QString name);
@@ -57,6 +58,7 @@ private:
     QString _name;
     bool _isAutched;
     MyClient* _interlocutor = nullptr;
+    bool color;
 };
 
 #endif // MYCLIENT_H
