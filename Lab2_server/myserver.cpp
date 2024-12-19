@@ -22,12 +22,9 @@ void MyServer::doSendToAllUserJoin(QString name)
 {
     QByteArray block;
     QDataStream out(&block, QIODevice::WriteOnly);
-    //����������� ����� ��� ������ �����
     out << (quint16)0 << MyClient::comUserJoin << name;
-    //����� �� ����������������� ����� ������ �����
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
-    //���������� ���� ��������������, ����� ����, ��� �����
     for (int i = 0; i < _clients.length(); ++i)
         if (_clients.at(i)->getName() != name && _clients.at(i)->getAutched())
             _clients.at(i)->_sok->write(block);
@@ -99,7 +96,6 @@ void MyServer::doSendMessageToUsers(QString message, const QStringList &users, Q
     out.device()->seek(0);
     out << (quint16)(block.size() - sizeof(quint16));
 
-    //����, ��� �������� ����� ��������� �� ��� ���, � ������ ���, ���� �� ��������
     QDataStream outToSender(&blockToSender, QIODevice::WriteOnly);
     outToSender << (quint16)0 << MyClient::comMessageToUsers << users.join(",") << message;
     outToSender.device()->seek(0);
@@ -107,8 +103,6 @@ void MyServer::doSendMessageToUsers(QString message, const QStringList &users, Q
     for (int j = 0; j < _clients.length(); ++j)
         if (users.contains(_clients.at(j)->getName()))
             _clients.at(j)->_sok->write(block);
-        else if (_clients.at(j)->getName() == fromUsername)
-            _clients.at(j)->_sok->write(blockToSender);
 }
 
 QStringList MyServer::getUsersOnline() const
@@ -139,12 +133,6 @@ bool MyServer::isNameUsed(QString name) const
 void MyServer::incomingConnection(qintptr handle)
 {
     MyClient *client = new MyClient(handle, this, this);
-    /*if (_widget != 0)
-    {
-        connect(client, SIGNAL(addUserToGui(QString)), _widget, SLOT(onAddUserToGui(QString)));
-        connect(client, SIGNAL(removeUserFromGui(QString)), _widget, SLOT(onRemoveUserFromGui(QString)));
-        connect(client, SIGNAL(messageToGui(QString,QString,QStringList)), _widget, SLOT(onMessageToGui(QString,QString,QStringList)));
-    }*/
     connect(client, SIGNAL(removeUser(MyClient*)), this, SLOT(onRemoveUser(MyClient*)));
     _clients.append(client);
     if(_clients.size() > 0 && _clients.size() % 2 == 0)
