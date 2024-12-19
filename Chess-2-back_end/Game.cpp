@@ -122,3 +122,39 @@ void Game::opponent_move(std::pair<int,int> old_coordinates, std::pair<int,int> 
     field[x1][y1] = field[x0][y0];
     field[x0][y0] = nullptr;
 }
+
+void Game::opponent_pawnmove(std::pair<int,int> old_coordinates, std::pair<int,int> new_coordinates, int piece){
+    int x0 = old_coordinates.first;
+    int y0 = old_coordinates.second;
+    int x1 = new_coordinates.first;
+    int y1 = new_coordinates.second;
+    switch(piece) {
+        case 2:
+            field[x1][y1]=new Horse(White);
+            break;
+        case -2:
+            field[x1][y1]=new Horse(Black);
+            break;
+        case 3:
+            field[x1][y1]=new Bishop(White);
+            break;
+        case -3:
+            field[x1][y1]=new Bishop(Black);
+            break;
+        case 4:
+            field[x1][y1]=new Rock(White);
+            break;
+        case -4:
+            field[x1][y1]=new Rock(Black);
+            break;
+        case 5:
+            field[x1][y1]=new Queen(White);
+            break;
+        case -5:
+            field[x1][y1]=new Queen(Black);
+            break;
+        default:
+            break;
+    }
+    field[x0][y0] = nullptr;
+}
