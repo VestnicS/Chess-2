@@ -22,5 +22,6 @@ public:
     void pawnMove(std::pair<int, int> coordinates_new,int piece);
     bool check_mate(Color color_my_figures);
     bool check_stalemate(Color color_my_figures);
+    void opponent_move(std::pair<int,int> old_coordinates, std::pair<int,int> new_coordinates);
 };
 #endif
