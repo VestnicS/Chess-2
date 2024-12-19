@@ -53,7 +53,35 @@ void Game::move(std::pair<int, int> coordinates_new)
     }
     field[x1][y1]->start = false;
 }
-
+void Game::servermove(std::pair<int, int> coordinates,std::pair<int, int> coordinates1)
+{
+    int x0 = coordinates_old.first;
+    int y0 = coordinates_old.second;
+    int x1 = coordinates1.first;
+    int y1 = coordinates1.second;
+    if (field[x0][y0]->name() == "King" && field[x0][y0]->start && (y1 - y0) == 2)
+    {
+        field[x1][y1] = field[x0][y0];
+        field[x0][y0] = nullptr;
+        field[x1][y1-1]=field[x0][7];
+        field[x0][7]=nullptr;
+        field[x1][y1-1]->start=false;
+    }
+    else if (field[x0][y0]->name() == "King" && field[x0][y0]->start && (y1 - y0) == -2)
+    {
+        field[x1][y1] = field[x0][y0];
+        field[x0][y0] = nullptr;
+        field[x1][y1+1]=field[x0][0];
+        field[x0][0]=nullptr;
+        field[x1][y1+1]->start=false;
+    }
+    else
+    {
+        field[x1][y1] = field[x0][y0];
+        field[x0][y0] = nullptr;
+    }
+    field[x1][y1]->start = false;
+}
 void Game::pawnMove(std::pair<int, int> coordinates_new,int piece)
 {
     int x0 = coordinates_old.first;
