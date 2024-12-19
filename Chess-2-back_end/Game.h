@@ -20,7 +20,7 @@ public:
     std::vector<std::pair<int, int>> future_go(std::pair<int, int> coordinates);
     void move(std::pair<int, int> coordinates_new);
     void pawnMove(std::pair<int, int> coordinates_new,int piece);
-    bool checkMate(Color color_my_figures);
-    bool stalemate(Color color_my_figures);
+    bool check_mate(Color color_my_figures);
+    bool check_stalemate(Color color_my_figures);
 };
 #endif
