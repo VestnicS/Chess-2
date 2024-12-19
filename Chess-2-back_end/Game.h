@@ -23,5 +23,6 @@ public:
     bool check_mate(Color color_my_figures);
     bool check_stalemate(Color color_my_figures);
     void opponent_move(std::pair<int,int> old_coordinates, std::pair<int,int> new_coordinates);
+    void opponent_pawnmove(std::pair<int,int> old_coordinates, std::pair<int,int> new_coordinates, int figure_name);
 };
 #endif
