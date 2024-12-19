@@ -105,3 +105,20 @@ void Game::pawnMove(std::pair<int, int> coordinates_new,int piece)
     field[x0][y0] = nullptr;
 
 }
+
+bool Game::check_mate(Color color_my_figures) {
+    return checkmate(field,color_my_figures);
+}
+
+bool Game::check_stalemate(Color color_my_figures) {
+    return stalemate(field,color_my_figures);
+}
+
+void Game::opponent_move(std::pair<int,int> old_coordinates, std::pair<int,int> new_coordinates){
+    int x0 = old_coordinates.first;
+    int y0 = old_coordinates.second;
+    int x1 = new_coordinates.first;
+    int y1 = new_coordinates.second;
+    field[x1][y1] = field[x0][y0];
+    field[x0][y0] = nullptr;
+}
