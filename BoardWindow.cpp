@@ -201,7 +201,6 @@ void BoardWidget::onSokReadyRead()
         CurrPiecePosition[x1][y1]=CurrPiecePosition[x0][y0];
         CurrPiecePosition[x0][y0]=0;
         setBoard();
-        //game.servermove({x0,y0},{x1,y1});
         turn=turn*-1;
         game.opponent_move({x0,y0},{x1,y1});
         }
@@ -216,10 +215,7 @@ void BoardWidget::onSokReadyRead()
                 if(result==QMessageBox::Close)
                 {
                     mb.close();
-
                 }
-
-
             }
             if(turn==1 && color==turn){
                 if(game.check_mate(Color::White)){

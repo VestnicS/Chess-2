@@ -19,6 +19,8 @@ public:
     Game();
     ~Game();
 
+
+    void  servermove(std::pair<int, int> coordinates,std::pair<int, int> coordinates1);
     std::vector<std::pair<int, int>> future_go(std::pair<int, int> coordinates);
     void move(std::pair<int, int> coordinates_new);
     void pawnMove(std::pair<int, int> coordinates_new,int piece);
