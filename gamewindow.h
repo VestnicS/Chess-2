@@ -18,7 +18,7 @@ public:
 public:
     explicit GameWindow(QWidget *parent = nullptr);
     ~GameWindow();
-private slots:
+public slots:
     void on_exit_clicked();
 };
 #endif // GAMEWINDOW_H

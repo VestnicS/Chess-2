@@ -272,10 +272,15 @@ std::vector<std::pair<int, int>> Queen::go(std::vector<std::vector<Figure *>> fi
             }
             else
             {
-                std::pair<int, int> possible_pair;
-                possible_pair.first = x + i;
-                possible_pair.second = y + i;
-                possible_moves.push_back(possible_pair);
+                std::vector<std::vector<Figure *>> field_new = field;
+                field_new[x + i][y + i] = field_new[x][y];
+                field_new[x][y] = nullptr;
+                if (!check_field(field_new, field[x][y]->figure_color())) {
+                    std::pair<int, int> possible_pair;
+                    possible_pair.first = x + i;
+                    possible_pair.second = y + i;
+                    possible_moves.push_back(possible_pair);
+                }
             }
         }
     }

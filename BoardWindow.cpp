@@ -2,6 +2,7 @@
 #include"PromotionChoose.h"
 #include <QMessageBox>
 #include"mainwindow.h"
+#include"gamewindow.h"
 BoardWidget::BoardWidget(QWidget *parent) : QWidget(parent) // turn == true - white
 {
     _sok = new QTcpSocket(this);
@@ -95,34 +96,185 @@ void BoardWidget::onSokReadyRead()
         in >> message;
         int x0,y0,x1,y1,c;
         c=0;
-        for(auto ch:message.toStdString())
+        int promoted;
+        if(message[0]=='(')
+        {
+            QMessageBox mb;
+            mb.setText("You lose, click exit please");
+            mb.setStyleSheet("QLabel{min-width: 500px;}");
+            mb.setEscapeButton(QMessageBox::StandardButton::Close);
+            int result =mb.exec();
+            if(result==QMessageBox::Close)
+            {
+                mb.close();
+
+            }
+        }
+        if(message[0]=='{')
+        {
+            QMessageBox mb;
+            mb.setText("You Draw, click exit please");
+            mb.setStyleSheet("QLabel{min-width: 500px;}");
+            mb.setEscapeButton(QMessageBox::StandardButton::Close);
+            int result =mb.exec();
+            if(result==QMessageBox::Close)
+            {
+                mb.close();
+
+            }
+        }
+        for(char ch:message.toStdString())
         {
 
             if(std::isdigit(ch))
             {
                 if(c==0)
                 {
-                    x0=static_cast<int>(ch);
+                    x0=ch-'0';
+                    c+=1;
                 }
-                if(c==1)
+                else if(c==1)
                 {
-                     y0=static_cast<int>(ch);
+                     y0=ch-'0';
+                     c+=1;
                 }
-                if(c==2)
+                else if(c==2)
                 {
-                     x1=static_cast<int>(ch);
+                    x1=ch-'0';
+                    c+=1;
                 }
-                if(c==3)
+                else if(c==3)
                 {
-                     y1=static_cast<int>(ch);
+                    y1=ch-'0';
+                    c+=1;
+                }
+                else if( c==4)
+                {
+                    promoted=ch-'0';
                 }
             }
+
         }
+        if (x1 == 0 && color==-1)
+        {
+
+            turn=turn*-1;
+            CurrPiecePosition[x1][y1]=promoted;
+            CurrPiecePosition[x0][y0]=0;
+            setBoard();
+            game.opponent_pawnmove({x0,y0},{x1,y1},promoted);
+        }
+        else if (x1 == 7 && color==1)
+        {
+
+            turn=turn*-1;
+            CurrPiecePosition[x1][y1]=-promoted;
+            CurrPiecePosition[x0][y0]=0;
+            setBoard();
+              game.opponent_pawnmove({x0,y0},{x1,y1},promoted);
+
+        }
+        else if(abs(CurrPiecePosition[x0][y0])==6 && abs(y1-y0)==2)
+        {
+            CurrPiecePosition[x1][y1]=CurrPiecePosition[x0][y0];
+            if(y1-y0==2)
+            {
+                CurrPiecePosition[x1][y1-1]=4*-color;
+                CurrPiecePosition[x0][7]=0;
+                game.opponent_move({x0,y0},{x1,y1});
+                game.opponent_move({x0,7},{x1,y1+1});
+
+            }
+            else
+            {
+                CurrPiecePosition[x1][y1+1]=4*-color;
+                CurrPiecePosition[x0][0]=0;
+                game.opponent_move({x0,y0},{x1,y1});
+                game.opponent_move({x0,0},{x1,y1+1});
+            }
+            CurrPiecePosition[x0][y0]=0;
+            setBoard();
+            turn=turn*-1;
+        }
+        else
+        {
         CurrPiecePosition[x1][y1]=CurrPiecePosition[x0][y0];
         CurrPiecePosition[x0][y0]=0;
         setBoard();
-        game.move({x1,y1});
+        //game.servermove({x0,y0},{x1,y1});
+        turn=turn*-1;
+        game.opponent_move({x0,y0},{x1,y1});
+        }
+        if(turn==1 && color==turn){
+            if(game.check_mate(Color::Black)){
+                send_move("You lose");
+                QMessageBox mb;
+                mb.setText("You win, click exit please");
+                mb.setStyleSheet("QLabel{min-width: 500px;}");
+                mb.setEscapeButton(QMessageBox::StandardButton::Close);
+                int result =mb.exec();
+                if(result==QMessageBox::Close)
+                {
+                    mb.close();
 
+                }
+
+
+            }
+            if(turn==1 && color==turn){
+                if(game.check_mate(Color::White)){
+                    send_move("You lose");
+                    QMessageBox mb;
+                    mb.setText("You win, click exit please");
+                    mb.setStyleSheet("QLabel{min-width: 500px;}");
+                    mb.setEscapeButton(QMessageBox::StandardButton::Close);
+                    int result =mb.exec();
+                    if(result==QMessageBox::Close)
+                    {
+                        mb.close();
+
+                    }
+
+
+                }
+            }
+            if(turn==1 && color==turn){
+                if(game.check_stalemate(Color::Black)){
+                    send_move("{Draw");
+                    QMessageBox mb;
+                    mb.setText("You Draw, click exit please");
+                    mb.setStyleSheet("QLabel{min-width: 500px;}");
+                    mb.setEscapeButton(QMessageBox::StandardButton::Close);
+                    int result =mb.exec();
+                    if(result==QMessageBox::Close)
+                    {
+                        mb.close();
+
+                    }
+
+
+                }
+                if(turn==1 && color==turn){
+                    if(game.check_stalemate(Color::White)){
+                        send_move("{Draw");
+                        QMessageBox mb;
+                        mb.setText("You Draw, click exit please");
+                        mb.setStyleSheet("QLabel{min-width: 500px;}");
+                        mb.setEscapeButton(QMessageBox::StandardButton::Close);
+                        int result =mb.exec();
+                        if(result==QMessageBox::Close)
+                        {
+                            mb.close();
+
+                        }
+
+
+                    }
+                }
+
+
+        }
+    }
     }
     break;
     case MyClient::comPrivateServerMessage:
@@ -147,7 +299,9 @@ void BoardWidget::onSokReadyRead()
             {
                 color=1;
             }
-            else{color=-1;}
+            else if(ch=='0'){
+                color=-1;
+            }
 
         }
         mb.setText("You are plaing against "+name1);
@@ -234,7 +388,7 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
     {
         if(to.x() < 8 && to.y() < 8 && matrix[to.x()][to.y()] != 0)
         {
-            if (matrix[to.x()][to.y()]>0 && (turn==color)){
+            if (matrix[to.x()][to.y()]>0 && (turn==color)&&color==1){
             movePoint.setX(to.x());
             movePoint.setY(to.y());
 
@@ -250,6 +404,23 @@ void BoardWidget::mousePressEvent(QMouseEvent *event){
             painted = PaintPossibleCells(game.future_go({currentPiecePosition.x(),currentPiecePosition.y()}));
             isSelected = true; // Устанавливаем флаг выбора
             cells[to.x()][to.y()].clear(); // Убираем изображение фигуры с доски
+            }
+        if (matrix[to.x()][to.y()]<0 && (turn==color)&&color==-1){
+                movePoint.setX(to.x());
+                movePoint.setY(to.y());
+
+                // Получаем путь к изображению
+                QString picPath = getPiecePicPath(CurrPiecePosition[to.x()][to.y()]);
+                QPixmap pixmap(picPath);
+                QPixmap scaledPixmap = pixmap.scaled(cellSize, cellSize, Qt::KeepAspectRatio);
+                QCursor cursor(scaledPixmap);
+                this->setCursor(cursor);
+                currentPiecePosition = to;
+
+                // Получаем возможные клетки для перемещения
+                painted = PaintPossibleCells(game.future_go({currentPiecePosition.x(),currentPiecePosition.y()}));
+                isSelected = true; // Устанавливаем флаг выбора
+                cells[to.x()][to.y()].clear(); // Убираем изображение фигуры с доски
             }
 
         }
@@ -412,6 +583,18 @@ void BoardWidget::move(std::pair<int,int> ToCell)
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
             game.pawnMove({ToCell.first,ToCell.second},CurrPiecePosition[ToCell.first][ToCell.second]);
+            QString s;
+            s=QString("[");
+            s+=QString::number(currentPiecePosition.x());
+            s+=QString(",");
+            s+=QString::number(currentPiecePosition.y());
+            s+=QString("-");
+            s+=QString::number(ToCell.first);
+            s+=QString(",");
+            s+=QString::number(ToCell.second);
+            s+=QString("]");
+            s+=QString::fromStdString(std::to_string(abs(promotionDialogW.getChosenPiece())));
+            send_move(s);
         }
         if (ToCell.first == 7 && CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()] == -1 && (turn==color))
         {
@@ -424,6 +607,18 @@ void BoardWidget::move(std::pair<int,int> ToCell)
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
             game.pawnMove({ToCell.first,ToCell.second},CurrPiecePosition[ToCell.first][ToCell.second]);
+            QString s;
+            s=QString("[");
+            s+=QString::number(currentPiecePosition.x());
+            s+=QString(",");
+            s+=QString::number(currentPiecePosition.y());
+            s+=QString("-");
+            s+=QString::number(ToCell.first);
+            s+=QString(",");
+            s+=QString::number(ToCell.second);
+            s+=QString("]");
+            s+=QString::fromStdString(std::to_string(abs(promotionDialogW.getChosenPiece())));
+            send_move(s);
         }
         if(abs(CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()])==6 && abs(ToCell.second-currentPiecePosition.y())==2 && ToCell.first==currentPiecePosition.x())
         {
@@ -439,6 +634,17 @@ void BoardWidget::move(std::pair<int,int> ToCell)
               CurrPiecePosition[ToCell.first][ToCell.second+1]=4*color;
                 CurrPiecePosition[currentPiecePosition.x()][0]=0;
             }
+            QString s;
+            s=QString("[");
+            s+=QString::number(currentPiecePosition.x());
+            s+=QString(",");
+            s+=QString::number(currentPiecePosition.y());
+            s+=QString("-");
+            s+=QString::number(ToCell.first);
+            s+=QString(",");
+            s+=QString::number(ToCell.second);
+            s+=QString("]");
+            send_move(s);
             CurrPiecePosition[currentPiecePosition.x()][currentPiecePosition.y()]=0;
             setBoard();
             turn=turn*-1;
