@@ -155,7 +155,7 @@ void BoardWidget::onSokReadyRead()
             }
 
         }
-        if (x1 == 0 && color==-1 and promoted>0)
+        if (x1 == 0 && color==-1 && promoted>0)
         {
 
             turn=turn*-1;
@@ -164,7 +164,7 @@ void BoardWidget::onSokReadyRead()
             setBoard();
             game.opponent_pawnmove({x0,y0},{x1,y1},promoted);
         }
-        else if (x1 == 7 && color==1 and promoted>0)
+        else if (x1 == 7 && color==1 && promoted>0)
         {
 
             turn=turn*-1;
