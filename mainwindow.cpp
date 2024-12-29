@@ -41,6 +41,17 @@ MainMenu::MainMenu(QWidget *parent) : QWidget(parent) {
 void MainMenu::onPlayButtonClicked() {
 
     bool ok;
+    bool ok1=false;
+    while(!ok1){
+    Ip = QString(QInputDialog::getText(this, tr("Ip"),
+                                       tr("Ip"), QLineEdit::Normal,
+                                       QString(),&ok1));
+        if(!ok){ break; this->close();}
+}
+
+    gameWindow.ip = Ip;
+
+
     while (name.isEmpty()||name.length()>12){
     name = QInputDialog::getText(this, tr("Введите имя,<12 символов"),
                                          tr("Имя:"), QLineEdit::Normal,
@@ -49,12 +60,14 @@ void MainMenu::onPlayButtonClicked() {
         break;
     }
     if (ok){
-    this->hide();
+
     const QString pname=name;
     gameWindow.setPname(pname);
-    name="";
+
+    this->hide();
     gameWindow.exec();
     this->show();
+    name="";
     }
 
 }

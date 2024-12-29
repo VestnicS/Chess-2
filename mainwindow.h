@@ -19,6 +19,8 @@ public:
     explicit MainMenu(QWidget *parent = nullptr);
     void showMenu(); // Метод для отображения главного меню
     QString name;
+    QString Ip;
+    GameWindow gameWindow;
 private slots:
     void onPlayButtonClicked(); // Слот для обработки нажатия кнопки "Играть"
     void onExitButtonClicked();
@@ -27,7 +29,7 @@ private:
     QPushButton *playButton;
     QPushButton *exitButton;
     QLabel *backgroundLabel;
-    GameWindow gameWindow; // Указатель на шахматную доску
+     // Указатель на шахматную доску
 
 };
 

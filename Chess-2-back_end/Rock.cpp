@@ -2,8 +2,8 @@
 
 Rock::Rock(Color new_color)
 {
-    color = new_color;
     start = true;
+    color = new_color;
 }
 std::string Rock::name() { return "Rock"; }
 Color Rock::figure_color() { return color; }
